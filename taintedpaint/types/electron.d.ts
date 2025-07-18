@@ -4,6 +4,7 @@
 interface ElectronAPI {
   downloadAndOpenTaskFolder: (
     taskId: string,
+    folderName: string,
     // This signature must match the one in preload.ts
     filesToDownload: { filename: string, relativePath: string, url: string }[]
   ) => Promise<void>;
