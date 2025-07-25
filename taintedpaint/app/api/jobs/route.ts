@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       if (name === 'filePaths') {
         filePaths.push(val);
       } else {
-        fields[name] = val;
+        fields[name] = val.trim();
       }
     });
 
