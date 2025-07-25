@@ -69,7 +69,7 @@ export default function CreateJobForm({ onJobCreated }: CreateJobFormProps) {
     // All files are in the root without subdirectories. Use the folder name
     // from the first file path without its trailing filename.
     const firstPath = (selectedFiles[0] as any).webkitRelativePath || "";
-    return firstPath.split("/")[0] || "已选文件夹";
+    return firstPath.split("/")[0].trim() || "已选文件夹";
   };
 
   const handleCreateJob = async () => {

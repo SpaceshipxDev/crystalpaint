@@ -179,6 +179,16 @@ the network request aborts.
 `formData()`. Files are written directly to disk as they arrive, bypassing the
 size restriction. Large folders upload successfully and new tasks are created
 as expected.
+# Upload fails when folder name has trailing spaces
+
+## Problem
+A folder named `YNMX-25-7-14-192` could not be uploaded through the **Create Job** form. Clicking **Submit** instantly showed "Failed to fetch" and no spinner. Renaming or duplicating the folder allowed the upload.
+
+## Root Cause
+The original folder included a trailing space which became part of the `folderName` field. The API route compared this value against each uploaded file path and failed to strip the prefix correctly, causing the request to abort.
+
+## Resolution
+`CreateJobForm` now trims the folder name extracted from `webkitRelativePath`. The `/api/jobs` route also trims incoming form fields. Uploads succeed even if the selected folder has accidental whitespace.
 
 # Folder Name Detected as File Name
 
