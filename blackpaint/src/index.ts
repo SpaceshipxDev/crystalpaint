@@ -97,23 +97,37 @@ app.on('ready', () => {
             .map((part) => sanitizePart(part))
             .join(path.sep);
 
+        async function downloadWithRetry(url: string, dest: string, attempts = 3) {
+          for (let i = 0; i < attempts; i++) {
+            try {
+              const response = await axios.get(url, {
+                responseType: 'stream',
+                timeout: 0,
+              });
+              await new Promise<void>((resolve, reject) => {
+                const writer = createWriteStream(dest);
+                response.data.pipe(writer);
+                response.data.on('error', reject);
+                writer.on('finish', resolve);
+                writer.on('error', reject);
+              });
+              return;
+            } catch (err: any) {
+              if (err.code === 'EBUSY' && i < attempts - 1) {
+                await new Promise((r) => setTimeout(r, 500));
+                continue;
+              }
+              throw err;
+            }
+          }
+        }
+
         const downloadPromises = filesToDownload.map(async (file) => {
           const sanitizedPath = sanitizeRelPath(file.relativePath);
           const localFilePath = path.join(destinationFolder, sanitizedPath);
           await fs.mkdir(path.dirname(localFilePath), { recursive: true });
 
-          const response = await axios.get(file.url, {
-            responseType: 'stream',
-            timeout: 0,
-          });
-
-          await new Promise<void>((resolve, reject) => {
-            const writer = createWriteStream(localFilePath);
-            response.data.pipe(writer);
-            response.data.on('error', reject);
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-          });
+          await downloadWithRetry(file.url, localFilePath);
         });
 
         await Promise.all(downloadPromises);
