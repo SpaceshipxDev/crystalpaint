@@ -5,7 +5,6 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { BoardData } from "@/types";
 import { updateBoardData, readBoardData } from "@/lib/boardDataStore";
-import { invalidateFilesCache } from "@/lib/filesCache";
 
 // --- Path Definitions ---
 // Root-level storage directory keeps dynamic data accessible in production
@@ -69,8 +68,6 @@ export async function POST(
       taskToUpdate.files.push(...newlyAddedFiles);
       updatedTask = taskToUpdate;
     });
-
-    invalidateFilesCache(taskId);
 
     return NextResponse.json(updatedTask);
   } catch (err) {
