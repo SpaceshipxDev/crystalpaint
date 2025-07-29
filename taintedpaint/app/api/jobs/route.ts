@@ -10,7 +10,6 @@ import path from "path";
 import type { BoardData, Task } from "@/types";
 import { baseColumns, START_COLUMN_ID } from "@/lib/baseColumns";
 import { readBoardData, updateBoardData } from "@/lib/boardDataStore";
-import { invalidateFilesCache } from "@/lib/filesCache";
 
 // --- Path Definitions ---
 // Store uploads under a top-level storage directory rather than /public
@@ -161,8 +160,6 @@ export async function POST(req: NextRequest) {
         boardData.columns[0].taskIds.push(taskId);
       }
     });
-
-    invalidateFilesCache(taskId);
 
     return NextResponse.json(newTask);
   } catch (err) {
