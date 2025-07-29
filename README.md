@@ -110,3 +110,34 @@ and every Electron client must have access to this SMB share.
 When a task is created, files are uploaded to the shared disk. Opening a task
 simply launches the folder from the SMB location, so all edits are instantly
 visible to other clients.
+
+## Migrating Existing Data
+
+If your server already has a `storage` directory with many task folders, you can
+migrate everything to the SMB share in a few steps.
+
+1. Make sure the share is created as described above and note its UNC path.
+2. Install dependencies inside `taintedpaint` if you haven't already:
+
+   ```bash
+   cd taintedpaint
+   npm install
+   ```
+
+3. Set the `SMB_ROOT` environment variable to the UNC path and run the migration
+   script:
+
+   ```bash
+   set SMB_ROOT=\\YOUR-SERVER\CrystalData  # Windows
+   node scripts/migrate-to-smb.js
+   ```
+
+   The script copies `storage/board.sqlite` and all task folders to the share
+   and updates the metadata so `taskFolderPath` values are relative like
+   `tasks/<taskId>`.
+
+4. Start the server with the same `SMB_ROOT` variable:
+
+   ```bash
+   npm run build && npm run start
+   ```
