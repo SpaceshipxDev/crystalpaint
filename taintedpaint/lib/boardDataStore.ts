@@ -1,19 +1,8 @@
-import { mkdirSync } from 'fs'
-import path from 'path'
-import { STORAGE_ROOT } from './storagePaths'
-import Database from 'better-sqlite3'
+import db from './db'
 import { baseColumns, START_COLUMN_ID, ARCHIVE_COLUMN_ID } from './baseColumns'
 import type { BoardData } from '@/types'
 
-// Store dynamic data outside of the public directory so it remains
-// accessible when running `npm run build && npm run start`.
-const STORAGE_DIR = STORAGE_ROOT
-const DB_PATH = path.join(STORAGE_DIR, 'board.sqlite')
-
-mkdirSync(STORAGE_DIR, { recursive: true })
-
-const db = new Database(DB_PATH)
-db.pragma('journal_mode = WAL')
+// Ensure the board_data table exists in the shared database
 db.exec(`CREATE TABLE IF NOT EXISTS board_data (
   id INTEGER PRIMARY KEY CHECK(id = 1),
   data TEXT NOT NULL
