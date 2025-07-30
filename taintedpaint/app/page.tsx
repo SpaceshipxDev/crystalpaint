@@ -1,9 +1,9 @@
-// app.page.tsx 
-
-"use client"
-
-import KanbanBoard from "@/kanban-board"
+import KanbanClientPage from './KanbanClient'
+import { getCurrentUser } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 export default function Page() {
-  return <KanbanBoard />
+  const user = getCurrentUser()
+  if (!user) redirect('/login')
+  return <KanbanClientPage />
 }
