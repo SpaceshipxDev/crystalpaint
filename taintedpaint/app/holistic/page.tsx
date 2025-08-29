@@ -41,7 +41,7 @@ interface Job extends Task {
 }
 
 const getStatus = (t: Task): Status => {
-  if (t.columnId === "archive2") return "Finished"
+  if (["archive2", "ship"].includes(t.columnId)) return "Finished"
   if (t.columnId === "archive") return "Quoted"
   return "Working"
 }
@@ -184,6 +184,7 @@ export default function ArchivePage() {
               className="w-full max-w-sm border-0 border-b border-gray-300 bg-transparent px-0 py-2 text-sm
                          focus:border-gray-900 focus:ring-0 placeholder-gray-400"
             />
+            <p className="mt-1 text-xs text-gray-500">{filtered.length} 条结果</p>
           </div>
         </div>
 
