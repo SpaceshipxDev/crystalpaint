@@ -616,6 +616,9 @@ export default function KanbanBoard() {
               className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <p className="mt-2 text-xs text-gray-400">如：海康 徐鹏</p>
+            {searchQuery && (
+              <p className="mt-1 text-xs text-gray-500">{searchResults.length} 条结果</p>
+            )}
           </div>
           
           <div className="overflow-y-auto h-[calc(100%-88px)]">
